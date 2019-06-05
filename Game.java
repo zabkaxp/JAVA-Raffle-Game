@@ -1,5 +1,6 @@
 package com.company;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Game {
@@ -14,10 +15,12 @@ public class Game {
 
 
     public int[] askForNumbers(){
-        Scanner in = new Scanner(System.in);
-        numbers = in.nextLine();
-        String[] playersNumbers = (numbers.split(" "));
-        int[] intPlayersNumbers = new int[playersNumbers.length];
+        try {
+            Scanner in = new Scanner(System.in);
+            numbers = in.nextLine();
+            String[] playersNumbers = (numbers.split(" "));
+            int[] intPlayersNumbers = new int[playersNumbers.length];
+
         for(int a =0; a<playersNumbers.length; a++ ){
             intPlayersNumbers[a] = Integer.parseInt(playersNumbers[a]);
         }
@@ -37,20 +40,55 @@ public class Game {
                 }
             }
         }
+
+        //checking if there are no duplictaes
+            int duplicateFlag = 0;
+            for(int t =0; t<intPlayersNumbers.length; t++) {
+                for (int b = 0; b < intPlayersNumbers.length; b++) {
+                    if (intPlayersNumbers[t] == intPlayersNumbers[b]) {
+                        duplicateFlag++;
+                    }
+                }
+                }
+            if (duplicateFlag > chosenNumbers) {
+                System.out.println("Please enter the numbers again, no duplicates this time!");
+                duplicateFlag = 0;
+                askForNumbers();
+            }
+
         if(flag==chosenNumbers){
             cupponNums = intPlayersNumbers;
         }
+        }catch(NumberFormatException ex){
+            System.out.println("Please input only numbers!");
+            askForNumbers();
+        }
+        Arrays.sort(cupponNums);
         return cupponNums;
     }
 
-    //Choosing 8 random numbers from 1 to 50.
+    //Choosing 5 random numbers from 1 to 50.
     public int[] chooseNumbers(){
         for(int i=0; i<chosenNumbers; i++){
             chosenNumber = (int)(Math.random()*49)+1;
             raffleNums[i] = chosenNumber;
         }
+        int duplicateFlag = 0;
+        for(int t =0; t<raffleNums.length; t++){
+            for(int b = 0; b<raffleNums.length; b++){
+                if(raffleNums[t]==raffleNums[b]) {
+                    duplicateFlag++;
+                }
+            }
+            if(duplicateFlag>chosenNumbers){
+                chooseNumbers();
+            }
+        }
+        Arrays.sort(raffleNums);
         return raffleNums;
     }
+
+
 
     public int[] checkTheMatchingNumbers(){
         for(int i = 0; i < raffleNums.length; i++){
@@ -69,6 +107,7 @@ public class Game {
                 arrayFlag++;
             }
         }
+        Arrays.sort(matchesArray);
         return matchesArray;
     }
 
